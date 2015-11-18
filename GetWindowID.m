@@ -3,9 +3,16 @@
 
 int main(int argc, char **argv)
 {
-	NSArray *windows = (NSArray *)CGWindowListCopyWindowInfo(kCGWindowListExcludeDesktopElements,kCGNullWindowID);
-	for(NSDictionary *window in windows)
-		if ([[window objectForKey:(NSString *)kCGWindowOwnerName] isEqualToString:[NSString stringWithUTF8String:argv[1]]])
-			if ([[window objectForKey:(NSString *)kCGWindowName] isEqualToString:[NSString stringWithUTF8String:argv[2]]])
-				printf("%d\n", [[window objectForKey:(NSString *)kCGWindowNumber] intValue]);
+    NSString *owner = [NSString stringWithUTF8String:argv[1]];
+    NSString *name = argv[2] ? [NSString stringWithUTF8String:argv[2]] : nil;
+    NSArray *windows = (NSArray *)CGWindowListCopyWindowInfo(kCGWindowListExcludeDesktopElements,kCGNullWindowID);
+    for(NSDictionary *window in windows)
+    {
+        NSString *windowName = [window objectForKey:(NSString *)kCGWindowName];
+        if ([[window objectForKey:(NSString *)kCGWindowOwnerName] isEqualToString:owner] && ((name == nil && windowName.length > 0) || [windowName isEqualToString:name]))
+        {
+            printf("%d\n", [[window objectForKey:(NSString *)kCGWindowNumber] intValue]);
+            break;
+        }
+    }
 }

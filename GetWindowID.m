@@ -3,6 +3,12 @@
 
 int main(int argc, char **argv)
 {
+	if (argc <= 2)
+	{
+		fprintf(stderr, "Usage: %s <application-bundle-name> <window-title>\n", argv[0]);
+		return -1;
+	}
+
 	NSArray *windows = (NSArray *)CGWindowListCopyWindowInfo(kCGWindowListExcludeDesktopElements,kCGNullWindowID);
 	for(NSDictionary *window in windows)
 		if ([[window objectForKey:(NSString *)kCGWindowOwnerName] isEqualToString:[NSString stringWithUTF8String:argv[1]]])

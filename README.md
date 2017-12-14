@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/smokris/GetWindowID.svg?branch=master)](https://travis-ci.org/smokris/GetWindowID)
+
 GetWindowID
 ===========
 

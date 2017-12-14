@@ -27,6 +27,20 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	CFDictionaryRef session = CGSessionCopyCurrentDictionary();
+	if (!session)
+		fprintf(stderr,
+			"Warning: %s is not running within a Quartz GUI session,\n"
+			"so it won't be able to retrieve information on any windows.\n"
+			"\n"
+			"If you're using continuous integration, consider launching\n"
+			"your agent as a GUI process (an `.app` bundle started via\n"
+			"System Preferences > Users & Group > Login Items)\n"
+			"instead of using a LaunchDaemon or LaunchAgent.",
+			argv[0]);
+	else
+		CFRelease(session);
+
 	NSString *requestedApp = @(argv[1]);
 	NSString *requestedWindow = @(argv[2]);
 	bool showList = [requestedWindow isEqualToString:@"--list"];

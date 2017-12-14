@@ -19,3 +19,7 @@ For example, to get the ID of the iOS/tvOS/watchOS Simulator:
 To get the ID of a window without a title, pass an empty string as the title:
 
     ./GetWindowID GLFW ''
+
+To list all of an app's windows, pass `--list` as the title:
+
+    ./GetWindowID Simulator --list

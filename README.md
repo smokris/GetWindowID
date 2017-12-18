@@ -6,6 +6,13 @@ GetWindowID
 macOS command line utility to retrieve the CGWindowID of the specified window (useful for screencapture).
 
 
+## Installation
+
+Via Homebrew:
+
+    brew install smokris/getwindowid/getwindowid
+
+
 ## Usage
 
     ./GetWindowID <application-bundle-name> <window-title>

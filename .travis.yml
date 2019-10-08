@@ -3,3 +3,12 @@ osx_image: xcode9.2
 language: objective-c
 compiler: clang
 script: make
+before_deploy: zip -r GetWindowID.zip GetWindowID
+deploy:
+  provider: releases
+  api_key:
+    secure: AUIhmpj80OZR+6+Xc31T1bP8RqQMr58k/hNjpPTfxAN3pERpxrquvIfE3kqDVRUbKATdUwL+e9Zw+9YSoDCpuNQlzAoX16LuNOLuUR1yu6qBn8Th4quA/4nlfERjHujJLuvsQsQBfHPS+6cSh4by7oPaAEUwmnSVAod1SucRhoaqwaaj15SIYtLTohr7KMEM2R4vK3UpAdqSGszlwYFutPLkJ1R5BVCpor8MCUdOh5e/ATD8gcp+wTS0owQe+gtBYtg8x6sLS4Q6V6qJzShEVUhXpN7NcCCFGJ1U0JJuwbLsDL5eMHzVEv1m7siavukDn4MlKNHo4OztxyBil49kixGwpkriy98ebVkAfZqhFeOKn4ZJLdBJqVrd9PDirNq0KjMrmDLdi3c+W85GwmIjXiGqMhHEM+mL9C0vLCz+s5S34LXTUu6x9zzSvULpCfcOdfVkwS9ZmIBferQ069V0VY0oA9gAnKvPKN7p2cGdhEH1ljU9tja/NoKYudixmhM2isS3W7x2pOecxvdWEmJ0wjkBYPgSV6fIsaYgOFUWZXQrj2RjnlTI+kt5hMc/SgXRaXikZoVMriInJNNY/6HczWfiWk5KExipSmB0mF6IIqLbWvPOfsUNjRVMQ/YhhJ0DElTDnRc/+9jeM7opR34PqyiKBlhDqjr8c1pefWS3axI=
+  file: GetWindowID.zip
+  on:
+    repo: smokris/GetWindowID
+    tags: true

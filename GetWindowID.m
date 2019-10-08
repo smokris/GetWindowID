@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 			"If you're using continuous integration, consider launching\n"
 			"your agent as a GUI process (an `.app` bundle started via\n"
 			"System Preferences > Users & Group > Login Items)\n"
-			"instead of using a LaunchDaemon or LaunchAgent.",
+			"instead of using a LaunchDaemon or LaunchAgent.\n",
 			argv[0]);
 	else
 		CFRelease(session);

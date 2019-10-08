@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 	for(NSDictionary *window in windows)
 	{
 		NSString *currentApp = window[(NSString *)kCGWindowOwnerName];
-		NSString *currentWindow = window[(NSString *)kCGWindowName];
+		NSString *currentWindowTitle = window[(NSString *)kCGWindowName];
 		CGRect currentBounds;
 		CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)window[(NSString *)kCGWindowBounds], &currentBounds);
 
@@ -63,19 +63,58 @@ int main(int argc, char **argv)
 				// If it's that wide and short, it's probably the system menu bar, so ignore it.
 				continue;
 
+			// If CGWindowListCopyWindowInfo didn't give us the window title, try to extract it from the Accessibility API.
+			if (currentWindowTitle.length == 0)
+			{
+				AXUIElementRef axapp = AXUIElementCreateApplication([window[(NSString *)kCGWindowOwnerPID] intValue]);
+				NSArray *windows;
+				if (AXUIElementCopyAttributeValue(axapp, kAXWindowsAttribute, (CFTypeRef *)&windows) == kAXErrorSuccess)
+					for (id window in windows)
+					{
+						// The Accessibility API doesn't expose a unique identifier for the window, so guess based on its frame.
+						bool possibleMatch = true;
+						CFTypeRef value;
+						if (AXUIElementCopyAttributeValue((AXUIElementRef)window, kAXPositionAttribute, &value) == kAXErrorSuccess)
+						{
+							CGPoint p;
+							if (AXValueGetValue(value, kAXValueTypeCGPoint, &p))
+								if (p.x != currentBounds.origin.x || p.y != currentBounds.origin.y)
+									possibleMatch = false;
+						}
+						if (AXUIElementCopyAttributeValue((AXUIElementRef)window, kAXSizeAttribute, &value) == kAXErrorSuccess)
+						{
+							CGSize s;
+							if (AXValueGetValue(value, kAXValueTypeCGSize, &s))
+								if (s.width != currentBounds.size.width || s.height != currentBounds.size.height)
+									possibleMatch = false;
+						}
+
+						if (possibleMatch)
+						{
+							AXUIElementCopyAttributeValue((AXUIElementRef)window, kAXTitleAttribute, (CFTypeRef *)&currentWindowTitle);
+							break;
+						}
+					}
+			}
+
+			if ([currentWindowTitle isEqualToString:@"Focus Proxy"]
+			 && currentBounds.size.width == 1
+			 && currentBounds.size.height == 1)
+				 continue;
+
 			if (showList)
 			{
 				printf(
 					"\"%s\" size=%gx%g id=%d\n",
-					[currentWindow UTF8String],
+					currentWindowTitle.UTF8String,
 					currentBounds.size.width,
 					currentBounds.size.height,
 					[window[(NSString *)kCGWindowNumber] intValue]);
 				continue;
 			}
 
-			if ([currentWindow isEqualToString:requestedWindow]
-			 || (!currentWindow && requestedWindow.length == 0))
+			if ([currentWindowTitle isEqualToString:requestedWindow]
+			 || (!currentWindowTitle && requestedWindow.length == 0))
 			{
 				printf("%d\n", [window[(NSString *)kCGWindowNumber] intValue]);
 				return 0;
